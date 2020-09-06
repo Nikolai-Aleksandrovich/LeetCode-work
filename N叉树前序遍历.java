@@ -21,27 +21,57 @@ class Node {
 
 import org.w3c.dom.Node;
 
-import java.util.LinkedList;
-import java.util.List;
+import javax.swing.tree.TreeNode;
+import java.util.*;
+
 
 class Solution {
     public List<Integer> preorder(Node root) {
-        LinkedList<Node> stack = new LinkedList<>();
-        LinkedList<Integer> output = new LinkedList<>();
+        Stack<Node> stack = new Stack<>();//为啥这里要用Node？因为这样才能把每次的Nodechildren改编成变化的
+        List<Integer> ans = new LinkedList<>();
         if (root == null) {
-            return output;
+            return ans;
         }
-
-        stack.add(root);
+        stack.push(root);
         while (!stack.isEmpty()) {
-            Node node = stack.pollLast();
-            output.add(node.val);
-            Collections.reverse(node.children);
-            for (Node item : node.children) {
-                stack.add(item);
+            Node node = stack.pop();
+            ans.add(node.val);
+            Collections.reverse(node.children);//123-->321
+            for (Node child : node.children) {
+                stack.push(child);
             }
+
         }
-        return output;
+        return ans;
     }
 }
 
+        /**我自己的方法
+         * Stack<Node> stack = new Stack<>();我自己的方法
+        LinkedList<Integer> list = new LinkedList<>();
+        dfs(root,list);
+        return list;
+
+    }
+    private void dfs(Node root, LinkedList<Integer> list){
+        if(root==null){
+            return;
+        }
+        if(!isEmptyChildren(root)){//这个判断其实不需要，因为即使叶子所有子为空，遍历完也不会加入任何值
+            list.add(root.val);
+            return;
+        }
+        list.add(root.val);
+        for (Node child:root.children){
+            dfs(child,list);
+        }
+
+    }
+    public boolean isEmptyChildren(Node root){//这里一定要想清楚，到底什么时候是ture，什么时候是false,这个判断其实不需要。
+        for (Node child:root.children){
+            if (child!=null){
+                return true;
+            }
+        }
+        return false;
+         */
