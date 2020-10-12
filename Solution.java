@@ -1,33 +1,27 @@
 package com.itranswarp.sample;
 
-import java.lang.reflect.Array;
-
 public class Solution {
-    public void reverseString(char[] s) {
-        int start = 0;
-        int end = s.length-1;
-        helper(start,end,s);
-
-        /**for (int i=0;i<s.length/2;i++){迭代很简单，我看答案还能递归，我想想
-            char temp;
-            temp = s[i];
-            s[i]=s[s.length-1-i];
-            s[s.length-1-i]=temp;
-
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        int[] ans = new int[nums1.length];
+        for(int i=0;i<nums1.length;i++){
+            for(int j=0;j<nums2.length;j++){
+                if(nums2[j]==nums1[i]){
+                    for (int k=j;k<nums2.length;k++){
+                        if(nums2[k]>nums1[i]){
+                            ans[i]=nums2[k];
+                            break;
+                        }
+                    }
+                    break;
+                }
+                if(nums2[j]>nums1[i]){
+                    ans[i]=nums2[i+1];
+                }else {
+                    ans[i]=-1;
+                }
+            }
         }
-         */
-    }
-    public void helper(int start,int end,char[] s){
-        if(start>=end){
-            return;
-        }
-        char temp = s[start];
-        s[start]=s[end];
-        s[end]=temp;
-        start++;
-        end--;
-        helper(start,end,s);
-
+        return ans;
     }
 
 }
