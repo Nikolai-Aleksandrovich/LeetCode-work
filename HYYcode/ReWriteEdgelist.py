@@ -1,49 +1,27 @@
-import pandas as pd
+
 import numpy as np
-import re
-import csv
-import sys
+try:
+    f = open("test1.weighted.edgelist")
+except IOError:
+    print("---**---打开文件失败！请检查是否存在该文件！并重新输入文件名!---**---")
+print("filePath:", "test1.weighted.edgelist")
+EdgeListNodeList = []
+for line in f.readlines():
+    lines = (line.strip().split(" "))
+    EdgeListNodeList.append(lines)
+EdgeListNode = np.array(EdgeListNodeList, dtype=float)
+print(EdgeListNodeList)
+newList = []
 
+for l in EdgeListNodeList:
+    if (float(l[2]) > 1.0):
+        newList.append(l)
+NewList = np.array(newList)
 
+with open('a.another.edgelist','w') as w:
+    for l in EdgeListNodeList:
+        np.savetxt('a.another.edgelist',str(l))
 
-
-filename = 'D:/csv divide area/labelFactory/label.weighted.csv'
-with open('input.csv', 'w', newline='') as g:
-        writer = csv.writer(g)
-        for row in datas:
-                writer.writerow()
-
-        # 还可以写入多行
-        writer.writerows(datas)
-
-with open(filename,newline='') as f:
-    reader = csv.reader(f)
-    first_id = 99
-    second_id = 0
-    first_value = 0
-    second_value = 0
-    for row in reader:
-        second_id =  row[0]
-        if first_id == second_id:
-            second_value = first_value+second_value
-            if second_value > 0:
-                row[0]=
-                writer.writerow(row)
-
-
-
-        first_id = row[0]
-
-
-
-
-
-
-
-
-
-        print(row)
-        #print(second_row)
 
 
 
