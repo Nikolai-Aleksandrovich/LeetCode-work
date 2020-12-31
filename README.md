@@ -1,2 +1,2 @@
 # Programming-Training
- This repository is build to improve my coding ability 
+ This repository is mostly my LeetCode work, I will be back!
