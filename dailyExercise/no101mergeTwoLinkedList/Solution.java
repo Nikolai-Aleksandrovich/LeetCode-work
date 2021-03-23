@@ -6,18 +6,13 @@ package no101mergeTwoLinkedList;
  */
 public class Solution {
     public  ListNode mergeKLists(ListNode[] lists) {
-        while (lists.length>1){
-            for (int i = 0; i < lists.length-1; i++) {
-
-            }
+        ListNode ans = null;
+        for (ListNode list : lists) {
+            ans = mergeTwoLinkedList(ans, list);
         }
+        return ans;
     }
-    public void merge(ListNode[] lists,int start,int end){
-        if(lists.length==1){
-            return 
-        }
 
-    }
     public ListNode mergeTwoLinkedList(ListNode node1,ListNode node2){
         ListNode empty1 = new ListNode(0,null);
         ListNode empty = empty1;
@@ -26,13 +21,13 @@ public class Solution {
         ListNode second = node2;
         while (first!=null && second!=null){
             if(first.val>=second.val){
-                empty.next=first;
-                empty=first;
-                first=first.next;
-            }else {
-                empty.next = second;
+                empty.next=second;
                 empty=second;
                 second=second.next;
+            }else {
+                empty.next = first;
+                empty=first;
+                first=first.next;
             }
         }
         if(first==null){
