@@ -4,103 +4,111 @@
 
 ### Description
 
-请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
+给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
 
-函数 myAtoi(string s) 的算法如下：
+如果数组中不存在目标值 target，返回 [-1, -1]。
 
-读入字符串并丢弃无用的前导空格
-检查下一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。 确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。
-读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。
-将前面步骤读入的这些数字转换为整数（即，"123" -> 123， "0032" -> 32）。如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。
-如果整数数超过 32 位有符号整数范围 [−231,  231 − 1] ，需要截断这个整数，使其保持在这个范围内。具体来说，小于 −231 的整数应该被固定为 −231 ，大于 231 − 1 的整数应该被固定为 231 − 1 。
-返回整数作为最终结果。
-注意：
+进阶：
 
-本题中的空白字符只包括空格字符 ' ' 。
-除前导空格或数字后的其余字符串外，请勿忽略 任何其他字符
+你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？
 
 ```
-输入：s = "42"
-输出：42
-解释：加粗的字符串为已经读入的字符，插入符号是当前读取的字符。
-第 1 步："42"（当前没有读入字符，因为没有前导空格）
-         ^
-第 2 步："42"（当前没有读入字符，因为这里不存在 '-' 或者 '+'）
-         ^
-第 3 步："42"（读入 "42"）
-           ^
-解析得到整数 42 。
-由于 "42" 在范围 [-231, 231 - 1] 内，最终结果为 42 。
-
+输入：nums = [5,7,7,8,8,10], target = 8
+输出：[3,4]
 ```
 
 ### Solution
 
 ```java
-package no8StringToInteger;
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int start = -1;
+        int end = -1;
+        int low = 0;
+        int high = nums.length-1;
+        while (low<=high) {
+            int mid = (high - low) / 2 + low;
+            if (nums[mid]==target){
+                if(mid==low){
+                    start=mid;
+                }else {
+                    if(nums[mid-1]==target){
+                        start=headCal(nums,low,mid-1,target);
+                    }else {
+                        start=mid;
+                    }
+                }
+                if(mid == high){
+                    end=mid;
+                    System.out.println("s"+start+"e"+end);
+                    return new int[]{start,end};
+                }else {
+                    if(nums[mid+1]==target){
+                        end=tailCal(nums,mid+1,high,target);
+                        System.out.println("s"+start+"e"+end);
+                        return new int[]{start,end};
+                    }else {
+                        end=mid;
+                        System.out.println("s"+start+"e"+end);
+                        return new int[]{start,end};
+                    }
+                }
 
-import java.util.HashMap;
-import java.util.Map;
+            }else if(nums[mid]>target){
+                high=mid-1;
+            }else {
+                low=mid+1;
+            }
 
-/**
- * @author Yuyuan Huang
- * @create 2021-03-19 10:52
- */
-public class Solution {
-    public int myAtoi(String str){
-        Automaton automaton = new Automaton();
-        int length = str.length();
-        for (int i = 0; i < length; i++) {
-            automaton.get(str.charAt(i));
+
         }
-        return (int) (automaton.sign * automaton.ans);
+        System.out.println("s"+start+"e"+end);
+        return new int[]{start,end};
 
     }
+    private int headCal(int[] nums,int low,int high,int target){
+        while(low<=high){
+            if(high==low){
+                return low;
+            }
+            int mid = (high-low)/2+low;
+            if(nums[mid]!=target){
+                low=mid+1;
+            }else {
+                if(mid==low){
+                    return mid;
+                }else if(nums[mid-1]==target){
+                    high=mid-1;
+                }else {
+                    return mid;
+                }
 
-
-}
-class Automaton{
-    public int sign =1;
-    //默认为正数
-    public long ans = 0;
-    //排除符号的答案
-    private String state = "start";
-    //当前状态为启动(start,signed,in_number,end)
-    private Map<String,String[]> table = new HashMap<String,String[]>(){
-        {
-            put("start",new String[]{"start","signed","in_number","end"});
-        put("signed",new String[]{"end","end","in_number","end"});
-        put("in_number",new String[]{"end","end","in_number","end"});
-        put("end",new String[]{"end","end","end","end"});
-
+            }
         }
-    };
-    //构建一个映射表
-    public void get(char c){
-        state = table.get(state)[get_col(c)];
-        //依靠当前状态和当前字母状态计算出当前状态
-        if("in_number".equals(state)){
-            ans = ans*10+c-'0';
-            //ans+c-'0'可以利用ascii码得到数字，0->48,1->49,1-0=49-48=1;
-            ans = sign==1? Math.min(ans,(long)Integer.MAX_VALUE) : Math.min(ans,-(long)Integer.MIN_VALUE);
-            //假如超过int的边界，那么取最小值
-        }else if("signed".equals(state)){
-            sign = c == '+' ? 1:-1;
-        }
+        return -1;
     }
-    private int get_col(char  c){
-        if(c==' '){
-            return 0;
-        }
-        if (c=='+'||c=='-'){
-            return 1;
-        }
-        if(Character.isDigit(c)){
-            return 2;
-        }
-        else return 3;
-    }
+    private int tailCal(int[] nums,int low,int high,int target){
+        while (low<=high){
+            if(high==low){
+                return low;
+            }
+            int mid = (high-low)/2+low;
+            if(nums[mid]!=target){
+                high=mid-1;
+            }else {
+                if(mid==high){
+                    return mid;
+                }else
+                if(nums[mid+1]==target){
+                    low=mid+1;
+                }else {
+                    return mid;
+                }
 
+            }
+        }
+        return -1;
+    }
 
 }
 ```
@@ -109,11 +117,7 @@ class Automaton{
 
 ##### 思路1：
 
-使用自动机
-
-我们的程序在每个时刻有一个状态 s，每次从序列中输入一个字符 c，并根据字符 c 转移到下一个状态 s'。这样，我们只需要建立一个覆盖所有情况的从 s 与 c 映射到 s' 的表格即可解决题目中的问题。
-
-![image-20210319121537215](C:%5CUsers%5Clenovo%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210319121537215.png)
+二分查找，根据mid有三种情况，第一，mid切分了要找的字符串，那么就需要去两边寻找，第二，mid左边是要找的字符串，mid右边是要找的字符串
 
 
 
