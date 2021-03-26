@@ -12,15 +12,14 @@ import static java.util.Arrays.stream;
  * @create 2021-03-26 17:42
  */
 public class Solution {
+
     public int firstMissingPositive(int[] nums) {
-        int pCount = 0;
         if (nums.length==1){
             return nums[0]==1 ? 2:1 ;
         }
         for (int i = 0; i < nums.length; i++) {
-            if (nums[i]>0){
+            if (nums[i]>0 && nums[i]<=nums.length){
                 exchange(nums,nums[i],nums[i]-1,i);
-                nums[nums[i]-1]=nums[i];
             }
         }
         if (nums[0]!=1){
@@ -29,19 +28,27 @@ public class Solution {
         for (int i = 0; i < nums.length-1; i++) {
             if(nums[i+1]-nums[i]!=1){
                 return i+2;
+            }else if(i+2== nums.length){
+                return i+2;
             }
+
+
         }
 
         return 0;
 
     }
     private void exchange(int[] nums,int curValue,int destIndex,int origin){
+        if(origin==destIndex){
+            nums[origin]=curValue;
+            return;
+        }
         if(curValue==nums[destIndex]){
             return;
         }
         int temp = nums[destIndex];
         nums[destIndex]=curValue;
-        if (temp>0){
+        if (temp>0 && temp<= nums.length){
             exchange(nums,temp,temp-1,origin);
         }else {
             nums[origin]=temp;
@@ -88,6 +95,6 @@ public class Solution {
 //
 //        }
 //        return 0;
-
+//
 //    }
 }
