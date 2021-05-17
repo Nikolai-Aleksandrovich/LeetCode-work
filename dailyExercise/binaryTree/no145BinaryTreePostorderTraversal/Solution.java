@@ -55,6 +55,31 @@ public class Solution {
         }
 
     }
+    public  List<Integer> postorderTraversal1(TreeNode root){
+        List<Integer> list = new ArrayList<>();
+        if (root==null){
+            return list;
+        }
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode node = root;
+        TreeNode pre = node;
+        while (!stack.isEmpty()||node!=null){
+            while (node!=null){
+                stack.push(node);
+                node= node.left;
+            }
+            node = stack.pop();
+            if (node.right!=null&&node.right!=pre){
+                stack.push(node);
+                node = node.right;
+            }else {
+                list.add(node.val);
+                pre = node;
+            }
+
+        }
+        return list;
+    }
     private void bfsBack(TreeNode root){
         Deque<TreeNode> stack = new LinkedList<>();
         TreeNode prev = null;

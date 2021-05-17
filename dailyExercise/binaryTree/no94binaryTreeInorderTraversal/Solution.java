@@ -59,6 +59,35 @@ public class Solution {
             node = temp.right;
         }
     }
+    public List<Integer> inorderTraversal1(TreeNode root,List<Integer> ans){
+        List<Integer> list = new ArrayList<>();
+        dfs1(root,list);
+        return list;
+    }
+    private void dfs1(TreeNode root,List<Integer> list){
+        if (root==null){
+            return;
+        }
+        dfs(root.left);
+        list.add(root.val);
+        dfs(root.right);
+    }
+    private List<Integer> bfs1(TreeNode root){
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (root!=null){
+            stack.push(root);
+            root = root.left;
+        }
+        while (!stack.isEmpty()){
+            TreeNode temp = stack.pop();
+            list.add(temp.val);
+            if (temp.right!=null){
+                bfs1(temp.right);
+            }
+        }
+        return
+    }
 
 }
 class TreeNode{

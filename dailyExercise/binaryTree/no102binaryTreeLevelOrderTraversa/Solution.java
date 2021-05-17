@@ -38,6 +38,31 @@ public class Solution {
         return lists;
 
     }
+    private List<List<Integer>> levelOrder1(TreeNode root){
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null){
+            return result;
+        }
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.push(root);
+        while (!queue.isEmpty()){
+            List<Integer> list = new ArrayList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode temp = queue.pollFirst();
+                list.add(temp.val);
+                if (temp.left!=null){
+                    queue.addLast(temp.left);
+                }
+                if (temp.right!=null){
+                    queue.addLast(temp.right);
+                }
+            }
+            result.add(list);
+        }
+        return result;
+
+    }
 }
 class TreeNode{
     int val;
