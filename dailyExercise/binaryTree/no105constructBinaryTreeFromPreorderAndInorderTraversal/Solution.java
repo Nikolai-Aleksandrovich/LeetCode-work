@@ -1,6 +1,8 @@
 package binaryTree.no105constructBinaryTreeFromPreorderAndInorderTraversal;
 
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -67,18 +69,78 @@ public class Solution {
 
     }
     public TreeNode buildTree2(int[] preorder,int[] inorder){
+        int m = preorder.length;
         for (int i = 0; i < inorder.length; i++) {
             indexMap.put(inorder[i],i );
         }
+        return buildTree2(preorder,inorder,0,m-1,0,m-1);
 
     }
     private TreeNode buildTree2(int[] preorder,int[] inorder,int preorderLeft,int preorderRight,int inorderLeft,int inorderRight){
+        if (preorderLeft>preorderRight){
+            return null;
+        }
         int rootValue = preorder[preorderLeft];
         int inorderRootIndex = indexMap.get(rootValue);
         int leftTreeSize = inorderRootIndex-inorderLeft;
         int rightTreeSize = inorderRight-inorderRootIndex;
-        TreeNode node = new TreeNode()
+        TreeNode node = new TreeNode(rootValue);
+        node.left = buildTree2(preorder,inorder,preorderLeft+1,preorderLeft+leftTreeSize,inorderLeft,inorderRootIndex-1);
+        node.right = buildTree2(preorder,inorder,preorderRight-rightTreeSize+1,preorderRight,inorderRootIndex+1,inorderRight);
+        return node;
+    }
+    public TreeNode buildTree3(int[] preorder, int[] inorder) {
+        if (preorder==null||preorder.length==0||preorder.length!= inorder.length){
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[0]);//根节点
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);//将根节点入栈
 
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            int preorderVal = preorder[i];
+            TreeNode node = stack.peek();
+            if (node.val!=inorder[inorderIndex]){//如果栈顶节点和当前节点不相同
+                node.left=new TreeNode(preorderVal);//串起来
+                stack.push(node.left);//将该节点的左子节点入栈
+
+            }else {
+                while (!stack.isEmpty()&&stack.peek().val==inorder[inorderIndex]){//栈顶节点和当前中序节点相同
+                    node=stack.pop();
+                    inorderIndex++;
+                }
+                node.right=new TreeNode(preorderVal);
+                stack.push(node.right);
+            }
+        }
+        return root;
+    }
+    public TreeNode buildTree4(int[] preorder, int[] inorder) {
+        if(preorder==null||preorder.length==0||preorder.length!= inorder.length){
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[0]);
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            TreeNode node = stack.peek();
+             if (node.val!=inorder[inorderIndex]){
+                 TreeNode temp = new TreeNode(preorder[i]);
+                 node.left = temp;
+                 stack.push(temp);
+             }else {
+                 while(!stack.isEmpty()&&stack.peek().val==inorder[inorderIndex]){
+                     node = stack.pop();
+                     inorderIndex++;
+                 }
+                 TreeNode right = new TreeNode(preorder[i]);
+                 node.right = right;
+                 stack.push(right);
+             }
+        }
+        return root;
     }
 }
 
