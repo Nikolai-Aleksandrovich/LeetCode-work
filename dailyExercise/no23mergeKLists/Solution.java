@@ -5,6 +5,8 @@ package no23mergeKLists;
  * @create 2021-03-22 17:40
  */
 
+import LinkedList.no160mergedLinkedList.ListNode;
+
 import java.util.*;
 
 /**
@@ -104,7 +106,7 @@ public class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         return merge(lists,0, lists.length-1);
     }
-    private ListNode merge(ListNode[] lists,int l,int r){
+    private ListNode merge1(ListNode[] lists,int l,int r){
         if(l==r){
             return lists[l];
         }

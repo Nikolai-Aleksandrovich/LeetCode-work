@@ -11,13 +11,17 @@ public class SelectSort {
             int min = i;
             for (int j = i+1; j < n; j++) {
                 if (nums[j]<nums[min]){
-
+                    min = j;
                 }
+
             }
+            swap(nums,min,i);
         }
+        return nums;
     }
     private static  void  swap(int[] nums,int i,int j){
         int temp = nums[i];
-        nums[i]=num
+        nums[i]=nums[j];
+        nums[j] = temp;
     }
 }
