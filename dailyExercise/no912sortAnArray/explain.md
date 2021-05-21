@@ -246,9 +246,18 @@ class MergeAndSort{
 }
 ```
 
-堆：
+### 堆的知识点：
 
-> 什么是二叉堆：一颗二叉树每个节点都大于等于两个子节点
+> 什么是二叉堆：一颗二叉树每个节点都大于等于两个子节点，根节点是堆有序的二叉树中最大的节点
+>
+> * 完全二叉树只用数组而不用指针就可以表示，只需要层序将节点放入数组姐可以
+> * **二叉堆**：一组能用堆有序的完全二叉树排序的元素，在数组中按照层级储存
+> * **父节点索引**：在堆中，位置k的父节点索引是k/2
+> * **子节点计算：**一个父节点的两个子节点索引分别是2*k与2*k+1
+> * 可以不使用指针，只使用索引在数组中模拟指针的移动
+> * **大小：**一颗节点数为N的完全二叉树，高度为logN，意味着：当树节点数量到达2的幂次时，树的高度增加1
+>
+> 
 
 ### Discuss
 
@@ -327,6 +336,7 @@ class MergeAndSort{
   * peek（N）：使用一次选择排序，选择最大的元素并把它返回
   * pop：使用一次选择排序，将最大的元素与边界元素交换，并返回他
   * 如何控制阈值：当元素数量小于总长度0.25，则resize，当元素数量大于总长度0.75，则resize
+  
 * 使用有序数组实现：
   * 插入（N）：每次将比插入元素大的元素向右移动一格
   * peek（1）：选择最右边最大的元素并把它返回
@@ -337,3 +347,95 @@ class MergeAndSort{
   * 插入：从链表头往里走，遇到和自己相同或者比自己小的元素，将自身指向它，它的父节点指向自己
   * peek和pop：直接返回链表头
   * resize，要记录一下链表长度
+  
+* 使用堆（完全二叉树）实现
+
+  * **什么是完全二叉树？**这个二叉树层序遍历，I位置对应的满二叉树的i位置相同，那么就可以成为完全二叉树
+
+  * **什么是二叉堆**：将完全二叉树节点层序遍历放到数组中，不要用0号索引
+
+    >将一个大小为N+1的数组表示一个N的堆,要有什么功能?
+    >
+    >* 交换 swap
+    >* 比较 compare
+    >* 上浮 swim
+    >* 下沉 sink
+    >
+    > > 当插入时,插入到堆尾部,不断比较自身和根节点的大小,来决定留在原地还是和父节点交换
+    > >
+    > > 当remove最大元素,此时根节点比左右两个都小,或者比任意一个小,那么这个根就应该和两个子节点中值较大的交换,并不断比较
+
+#### 使用堆实现优先队列:
+
+* 拓展功能的思绪:
+  * 多叉堆:用数组表示三叉堆
+    * 位置K的节点,他的左中右元素为3*K-1,3*K,3K+1,他的父元素为(K+1)/3
+  * 调整数组大小:
+    * 添加一个空构造函数
+    * 在insert中添加一个将数组长度设置为2倍的方法
+    * 在poll中添加一个将数组长度减半的方法
+  * 元素保证是不可变的,不然计算好的位置,在查找的时候,就找不到
+  * 
+
+```java
+public class PriorityQueue<Key extends Comparable<Key>> {
+    private Key[] nums; //基于堆的完全二叉树
+    private int N = 0;     //0没有使用,N表示长度
+
+    public PriorityQueue(int maxN){
+        //为0留下位置
+        nums =  (Key[]) new Comparable[maxN+1];
+    }
+    public boolean isEmpty(){
+        return N==0;
+    }
+    public int size(){
+        return N;
+    }
+    public void insert(Key value){
+        nums[++N] = value;
+        swim(N);
+    }
+    public Key poll(){
+        Key ans = nums[1];
+        swap(1,N--);
+        nums[N+1] = null;
+        sink(1);
+        return ans;
+
+    }
+
+
+    private void swap(int i,int j){
+        Key temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    private boolean less(int a,int b){
+        return nums[a].compareTo(nums[b])<0;
+    }
+    private void swim(int index){
+        while(index>1&&less(index/2,index)){
+            swap(index,index/2);
+            index = index/2;
+        }
+
+    }
+    private void sink(int index){
+        while(2*index<=N){
+            int j = 2*index;
+            if (j<N&&less(j,j+1)){
+                j++;
+            }
+            if (!less(index,j)){
+                break;
+            }
+            swap(index,j);
+            index = j;
+        }
+    }
+
+}
+
+```
+
