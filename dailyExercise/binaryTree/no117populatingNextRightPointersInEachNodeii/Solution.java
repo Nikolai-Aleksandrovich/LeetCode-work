@@ -45,12 +45,13 @@ public class Solution {
         if (root==null){
             return null;
         }
-        root.left=null;
         helper(root);
         return root;
 
     }
     private void helper(Node node){
+        System.out.println(node);
+        System.out.println(node.next);
         if (node==null||(node.left==null&&node.right==null)){
             return;
         }
@@ -60,7 +61,6 @@ public class Solution {
                 temp=temp.next;
             }
             if (temp==null){
-                node.right.next =null;
                 return;
             }
             if (temp.right!=null){
