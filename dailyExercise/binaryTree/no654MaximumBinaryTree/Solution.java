@@ -28,6 +28,11 @@ public class Solution {
         return tempMaxIndex;
     }
 }
+class Solution1{
+
+
+}
+
 class TreeNode {
     int val;
     TreeNode left;
